@@ -1,18 +1,9 @@
 import torch.utils.data as data
 from data_org import *
-from glob import glob
 
 import h5py
 import numpy as np
 
-def loadfile_name(pth, ext='.mat'):
-    outlis = list()
-    for item in glob(pth + '*' + ext):
-        outlis.append(
-            item
-            # os.path.join(pth, item)
-        )
-    return outlis
 
 ENCODE = {1: "meningioma", 2: "glioma", 3: "pituitary tumor"}
 
@@ -32,7 +23,6 @@ def readMat(path):
 class figshare(data.Dataset):
     # Raw Dataset
     def __init__(self, onlyThisSet):
-        # super(covdata, self).__init__()
         self.onlyThisSet = onlyThisSet
     def __len__(self):
         if self.onlyThisSet is not None :
@@ -42,10 +32,6 @@ class figshare(data.Dataset):
 
     def __getitem__(self, i):
         ind = self.onlyThisSet[i]
-        print(ind)
-        if(ind  > 766):
-            print("no" + str(ind) )
-            ind = 1
         return readMat("dataset/"+str(ind)+".mat")
 
 shift = lambda x : x -x.min()
@@ -61,12 +47,12 @@ class DataFold(data.Dataset):
 
     def __getitem__(self, item):
         obj = self.data.__getitem__(item)
-        im = normalize(np.asarray(obj["image"],np.float))
-        return self.aug(np.asarray(im*255, np.uint8)), obj["label"][0,0]
+        im = normalize(np.asarray(obj["image"],np.float))*255
+        return self.aug(np.asarray(im, np.uint8)), int(obj["label"][0,0])
 
 def getfoldsArray(foldIndMat="cvind.mat"):
     foldinds = h5py.File(foldIndMat)["cvind"]
-    return np.array(foldinds);
+    return np.array(foldinds)
 
 def getfoldDataSets(aug):
     fold_array = getfoldsArray()
@@ -76,7 +62,7 @@ def getfoldDataSets(aug):
     for i in range(5):
         indices = np.where(fold_array == (i+1))[0]
         data_list.append(DataFold(aug, indices))
-    return data_list;
+    return data_list
 
 def create_loader(dts, bs, ):
 

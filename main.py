@@ -12,10 +12,6 @@ preprocess = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-
-
-
-
 data = dorg.getloaders(preprocess,1)
 
 for dt in data:
