@@ -9,7 +9,7 @@ class ResNextBlock(nn.Module):
         """ Constructor
             inplanes: input channel dimensionality
             planes: output channel dimensionality
-            baseWidth: base width.
+            baseWidth: base width defult To One.
             cardinality: num of convolution groups.
             stride: conv stride. Replaces pooling layer.
         """
@@ -24,7 +24,7 @@ class ResNextBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(D*C)
         self.conv3 = nn.Conv2d(D*C, planes * 4, kernel_size=1, stride=1, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(planes * 4)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.LeakyReLU(inplace=True)
 
         self.downsample = downsample
 
@@ -37,3 +37,20 @@ class ResNextBlock(nn.Module):
         out += x
         out = self.relu(out)
         return out
+
+class ResBlock(nn.Module):
+    def __init__(self, inplanes, outplanes):
+        super(ResBlock, self).__init__()
+        self.conv1 = nn.Conv2d(inplanes,outplanes,
+                              kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm2d(outplanes)
+        self.conv2 = nn.Conv2d(inplanes,outplanes,
+                              kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm2d(outplanes)
+        self.relu = nn.LeakyReLU(inplace=True)
+    def forward(self, x):
+        out = self.relu(self.bn1(self.conv1(x)))
+        out = self.relu(self.bn2(self.conv2(out)))
+        return out + x
+
+
