@@ -29,7 +29,6 @@ class figshare(data.Dataset):
             return len(self.onlyThisSet)
         else:
             raise "Error"
-
     def __getitem__(self, i):
         ind = self.onlyThisSet[i]
         return readMat("dataset/"+str(ind)+".mat")
@@ -48,7 +47,8 @@ class DataFold(data.Dataset):
     def __getitem__(self, item):
         obj = self.data.__getitem__(item)
         im = normalize(np.asarray(obj["image"],np.float))*255
-        return self.aug(np.asarray(im, np.uint8)), int(obj["label"][0,0])
+        im = np.asarray(im, np.uint8)
+        return self.aug(im), int(obj["label"][0,0])
 
 def getfoldsArray(foldIndMat="cvind.mat"):
     foldinds = h5py.File(foldIndMat)["cvind"]
@@ -77,4 +77,4 @@ def getloaders(aug, bs=128):
 
 
 if __name__ == '__main__':
-    lis = getloaders(lambda x:x);
+    lis = getloaders(lambda x:x)

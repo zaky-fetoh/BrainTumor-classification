@@ -2,7 +2,6 @@
 import numpy as np
 import data_org as dorg
 import matplotlib.pyplot as plt
-
 import torchvision.transforms as transforms
 
 preprocess = transforms.Compose([
