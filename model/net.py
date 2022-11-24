@@ -3,11 +3,10 @@ import torch.nn as nn
 import math
 
 class ResNextBlock(nn.Module):
-    expansion = 4
-
-    def __init__(self, inplanes, planes, baseWidth, cardinality, stride=1, downsample=None):
+    #Resnextblock
+    def __init__(self, inplanes, planes, baseWidth=1,
+                 cardinality=32, stride=1, downsample=None):
         """ Constructor
-        Args:
             inplanes: input channel dimensionality
             planes: output channel dimensionality
             baseWidth: base width.
@@ -30,23 +29,11 @@ class ResNextBlock(nn.Module):
         self.downsample = downsample
 
     def forward(self, x):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
-
-        out = self.conv3(out)
-        out = self.bn3(out)
-
+        out = self.relu(self.bn1(self.conv1(x)))
+        out = self.relu(self.bn2(self.conv2(out)))
+        out = self.bn3(self.conv3(out))
         if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out += residual
+            x = self.downsample(x)
+        out += x
         out = self.relu(out)
-
         return out
