@@ -17,7 +17,7 @@ preprocess = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-data = dorg.getloaders(preprocess,3)
+data = dorg.getloaders(preprocess,32)
 
 opt = optim.Adam
 crit= nn.CrossEntropyLoss()
