@@ -1,7 +1,14 @@
 # Fdb version 3
-["pdflatex"] 1669387031 "/media/zaky/FCS/ML-DL-Projects/FreeLance/BrainTumor/Documentation/report.tex" "report.pdf" "report" 1669387032
+["bibtex report"] 1669391327 "report.aux" "report.bbl" "report" 1669391328
+  "/usr/share/texlive/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
+  "mybib.bib" 1669390508 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "report.aux" 1669391328 908 9ec3e3b56ba3acca6a94b22fc64541bd "pdflatex"
+  (generated)
+  "report.bbl"
+  "report.blg"
+["pdflatex"] 1669391327 "/media/zaky/FCS/ML-DL-Projects/FreeLance/BrainTumor/Documentation/report.tex" "report.pdf" "report" 1669391328
   "/etc/texmf/web2c/texmf.cnf" 1665057596 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/media/zaky/FCS/ML-DL-Projects/FreeLance/BrainTumor/Documentation/report.tex" 1669387031 2856 61852da93425dffd326c56ea9244729e ""
+  "/media/zaky/FCS/ML-DL-Projects/FreeLance/BrainTumor/Documentation/report.tex" 1669391326 2992 e6bdd55c1628bb69c839d1d5d039093f ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -26,8 +33,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1665057684 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1665057709 2800603 7f60e46322af3921c02983333220c441 ""
-  "report.aux" 1669387032 875 725044b1b4f609446421de1f9014bdef "pdflatex"
-  "report.tex" 1669387031 2856 61852da93425dffd326c56ea9244729e ""
+  "report.aux" 1669391328 908 9ec3e3b56ba3acca6a94b22fc64541bd "pdflatex"
+  "report.bbl" 1669391327 49 0eba253fc001332e731e8aba3f23127b "bibtex report"
+  "report.tex" 1669391326 2992 e6bdd55c1628bb69c839d1d5d039093f ""
   (generated)
   "report.aux"
   "report.log"
