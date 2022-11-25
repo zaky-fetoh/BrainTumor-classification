@@ -54,32 +54,33 @@ def accuracy(output, target):
 
 
 
-def train_(net, train_loader, criterion, opt_fn, ustep,
+def train_(net, train_loaders, criterion, opt_fn, ustep,
            device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
            ):
     acc = clfmet.Accuracy(top_k=1)
     llis, alis, samples = list(), list(), 0
-    for imgs, target in train_loader:
-        #Move to Device
-        imgs = imgs.to(device=device)
-        target = target.to(device=device)
+    for train_loader in train_loaders:
+        for imgs, target in train_loader:
+            #Move to Device
+            imgs = imgs.to(device=device)
+            target = target.to(device=device)
 
-        samples += imgs.shape[0]
-        pred = net(imgs)
+            samples += imgs.shape[0]
+            pred = net(imgs)
 
-        loss = criterion(pred, target)
-        loss.backward()
-        if samples >= ustep:
-            print('netupdated:', samples)
-            nn.utils.clip_grad_value_(net.parameters(), 0.1)
-            opt_fn.step()
-            opt_fn.zero_grad()
-            samples = 0
+            loss = criterion(pred, target)
+            loss.backward()
+            if samples >= ustep:
+                print('netupdated:', samples)
+                nn.utils.clip_grad_value_(net.parameters(), 0.1)
+                opt_fn.step()
+                opt_fn.zero_grad()
+                samples = 0
 
-        llis.append(loss.item())
-        alis.append(acc(pred, target).item())
+            llis.append(loss.item())
+            alis.append(acc(pred, target).item())
 
-        print(llis[-1], alis[-1])
+            print(llis[-1], alis[-1])
 
     return [llis, alis]
 
@@ -119,3 +120,61 @@ def validate_(net, val_loader, criterion,
     return {"Loss": llis ,"Accuracy": alis,
             "recall":rlis, "Precision":plis,
             "specificity":slis, "F1Score":f1lis}
+
+
+
+def kfoldTraining(net_class=network, loaders =None, profile =None,
+                       epochs=50, startwith=0,
+                       criterion=None, opt_fn=None, ustep = None,
+                       device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
+                       ):
+    """
+        Profile shall maps the KfoldNumber,K, to epoch NUMber ,N, to
+        { Train:{"Loss":list # list of all losess for each step,
+                "Accuracy":list #list of accuracy for each step }
+          Validation:{"Loss": llis ,"Accuracy": alis,
+            "recall":rlis, "Precision":plis,
+            "specificity":slis, "F1Score":f1lis}
+    """
+
+    for testfold in range(5):
+        t.cuda.empty_cache()
+        net = net_class()
+        net.to(device=device)
+        profile[testfold] = dict()
+        for e in range(epochs):
+            e += startwith
+            profile[testfold][e]= {
+                "Train":{"Loss":list(),
+                         "Accuracy":list()},
+                "Validate":None }#it WillBe assignedto directilly to the out of validate_
+            # start training without loaderof NUMber testfold
+            for i, loader in enumerate(loaders):
+                if i == testfold :
+                    continue
+                l, a = train_(net, loader,criterion,
+                              opt_fn, ustep, device)
+                profile[e][testfold]["Train"]["Loss"] += l
+                profile[e][testfold]["Train"]["Accuracy"] += a
+            # traing finishedfor that fold and start validating
+            profile[e][testfold]["Validate"] = validate_(
+                net,loaders[testfold], criterion, device)
+
+
+
+        net.train()
+        tr_profile[e] += train_(net, trldr, criterion,
+                                opt_fn, augm, ustep,
+                                device)
+
+        save_model(net, e)
+
+        net.eval()
+        tr_profile[e] += validate_(net, valdr, criterion,
+                                   augm, device)
+        save_train_hist(tr_profile, e)
+        save_train_hist(aug.transforms[si].ScaleHist.tolist(),
+                        e, name='augfr')
+
+    return tr_profile
+
