@@ -45,33 +45,32 @@ def load_model(file_path=None, model= None,
     return True
 
 
-def train_(net, train_loaders, criterion, opt_fn, ustep,
+def train_(net, train_loader, criterion, opt_fn, ustep,
            device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
            ):
     acc = clfmet.MulticlassAccuracy(num_classes=3)
     llis, alis, samples = list(), list(), 0
-    for train_loader in train_loaders:
-        for imgs, target in train_loader:
-            #Move to Device
-            imgs = imgs.to(device=device)
-            target = target.to(device=device)
+    for imgs, target in train_loader:
+        #Move to Device
+        imgs = imgs.to(device=device)
+        target = target.to(device=device)
 
-            samples += imgs.shape[0]
-            pred = net(imgs)
+        samples += imgs.shape[0]
+        pred = net(imgs)
 
-            loss = criterion(pred, target)
-            loss.backward()
-            if samples >= ustep:
-                print('netupdated:', samples)
-                nn.utils.clip_grad_value_(net.parameters(), 0.1)
-                opt_fn.step()
-                opt_fn.zero_grad()
-                samples = 0
+        loss = criterion(pred, target)
+        loss.backward()
+        if samples >= ustep:
+            print('netupdated:', samples)
+            nn.utils.clip_grad_value_(net.parameters(), 0.1)
+            opt_fn.step()
+            opt_fn.zero_grad()
+            samples = 0
 
-            llis.append(loss.item())
-            alis.append(acc(pred, target).item())
+        llis.append(loss.item())
+        alis.append(acc(pred, target).item())
 
-            print(llis[-1], alis[-1])
+        print(llis[-1], alis[-1])
 
     return [llis, alis]
 
@@ -114,9 +113,9 @@ def validate_(net, val_loader, criterion,
 
 
 
-def kfoldTraining(net_class=network, loaders =None, profile =None,
+def kfoldTraining(net_class=Network, loaders =None, profile =None,
                        epochs=50, startEpochWith=0, startFoldWith=0,
-                       criterion=None, opt_fn=None, ustep = None,
+                       criterion=None, optClass=None, ustep = None,
                        device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
                        ):
     """Profile shall maps the KfoldNumber,K, to epoch NUMber ,N, to
@@ -134,6 +133,9 @@ def kfoldTraining(net_class=network, loaders =None, profile =None,
             load_model(model=net,fold_num=startFoldWith,
                        ep_num=startEpochWith)
             initload = False
+
+        opt_fn = optClass(net.parameters())
+
         net.to(device=device)
         profile[testfold] = dict()
         for e in range(startEpochWith, epochs):

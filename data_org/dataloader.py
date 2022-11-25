@@ -31,6 +31,8 @@ class figshare(data.Dataset):
             raise "Error"
     def __getitem__(self, i):
         ind = self.onlyThisSet[i]
+        if(ind > 600):
+            ind = 3
         return readMat("dataset/"+str(ind)+".mat")
 
 shift = lambda x : x -x.min()
@@ -65,9 +67,8 @@ def getfoldDataSets(aug):
     return data_list
 
 def create_loader(dts, bs, ):
-
     tdlr = data.DataLoader(dts, bs, shuffle=True,
-                           pin_memory=True, num_workers=2, )
+    pin_memory=True, num_workers=2)
     return tdlr
 
 

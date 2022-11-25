@@ -24,7 +24,7 @@ class ResNextBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(D*C)
         self.conv3 = nn.Conv2d(D*C, planes , kernel_size=1, stride=1, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(planes )
-        self.relu = nn.LeakyReLU(inplace=True)
+        self.relu = nn.LeakyReLU()
 
         self.downsample = downsample
 
@@ -48,7 +48,7 @@ class ResBlock(nn.Module):
         self.conv2 = nn.Conv2d(outplanes,outplanes,
                               kernel_size=3, padding=1)
         self.bn2 = nn.BatchNorm2d(outplanes)
-        self.relu = nn.LeakyReLU(inplace=True)
+        self.relu = nn.LeakyReLU()
     def forward(self, x):
         out = self.relu(self.bn1(self.conv1(x)))
         out = self.relu(self.bn2(self.conv2(out)))
