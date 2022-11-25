@@ -1,63 +1,54 @@
-import torchvision.transforms as transf
-import torch.nn.functional as f
-from data_org import *
-import torch.nn as nn
+import torchmetrics.classification as clfmet
 from model import *
 import torch as t
 import pickle
 
-import torchmetrics.classification as clfmet
 
+getName = lambda path,name,fold,ep: path+name+"_"+str(fold)+"_"+str(ep)+".pth"
 
-def save_train_hist(hist, ep_num,
-                    name='hist',
+def save_train_hist(hist,fold_num, ep_num,name='hist',
                     outPath='./weights/'):
-    file_name = outPath + name + str(ep_num) + '.p'
+    file_name = getName(outPath, name, fold_num, ep_num)+".p"
     with open(file_name, 'wb') as file:
         pickle.dump(hist, file)
 
 
-def load_train_hist(ep_num, name='hist',
+def load_train_hist(fold_num, ep_num, name='hist',
                     outPath='./weights/'):
-    file_name = outPath + name + str(ep_num) + '.p'
+    #load saved profile
+    file_name = getName(outPath, name, fold_num, ep_num)+ '.p'
     with open(file_name, 'rb')as file:
         hist = pickle.load(file)
     return hist
 
 
 
-def save_model(net, ep_num,
-               name='weight',
+def save_model(net, fold_num, ep_num,name='weight',
                outPath='./weights/'):
-    file_name = outPath + name + str(ep_num) + '.pth'
+    # saveModelto folder
+    file_name = getName(outPath, name, fold_num, ep_num)
     t.save(net.state_dict(), file_name)
     print('Model Saved', file_name)
 
 
-def load_model(file_path=None, model=Network(),
-               outPath='./weights/', name='weight', ep_num=None,
-               ):
-    file_path = outPath + name + str(
-        ep_num) + '.pth' if not file_path else file_path
-    state_dict = t.load(file_path)
+def load_model(file_path=None, model= None,
+               outPath='./weights/', name='weight',
+               fold_num = None, ep_num=None,):
+    file_path = getName(outPath,name,fold_num, ep_num) if not file_path else file_path
+    try:
+        state_dict = t.load(file_path)
+    except:
+        print("failedto loadthe model", file_path)
+        return False
     model.load_state_dict(state_dict)
     print('Model loaded', file_path)
-
-def accuracy(output, target):
-    """Computes the accuracy over the k top predictions for the specified values of k"""
-    with t.no_grad():
-        output = output.argmax(1)
-        matchs = output == target
-        return matchs.sum().float() / matchs.size(0)
-
-
-
+    return True
 
 
 def train_(net, train_loaders, criterion, opt_fn, ustep,
            device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
            ):
-    acc = clfmet.Accuracy(top_k=1)
+    acc = clfmet.MulticlassAccuracy(num_classes=3)
     llis, alis, samples = list(), list(), 0
     for train_loader in train_loaders:
         for imgs, target in train_loader:
@@ -124,26 +115,28 @@ def validate_(net, val_loader, criterion,
 
 
 def kfoldTraining(net_class=network, loaders =None, profile =None,
-                       epochs=50, startwith=0,
+                       epochs=50, startEpochWith=0, startFoldWith=0,
                        criterion=None, opt_fn=None, ustep = None,
                        device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
                        ):
-    """
-        Profile shall maps the KfoldNumber,K, to epoch NUMber ,N, to
+    """Profile shall maps the KfoldNumber,K, to epoch NUMber ,N, to
         { Train:{"Loss":list # list of all losess for each step,
                 "Accuracy":list #list of accuracy for each step }
           Validation:{"Loss": llis ,"Accuracy": alis,
             "recall":rlis, "Precision":plis,
             "specificity":slis, "F1Score":f1lis}
     """
-
-    for testfold in range(5):
+    initload = True
+    for testfold in range(startFoldWith, 5):
         t.cuda.empty_cache()
         net = net_class()
+        if initload :
+            load_model(model=net,fold_num=startFoldWith,
+                       ep_num=startEpochWith)
+            initload = False
         net.to(device=device)
         profile[testfold] = dict()
-        for e in range(epochs):
-            e += startwith
+        for e in range(startEpochWith, epochs):
             profile[testfold][e]= {
                 "Train":{"Loss":list(),
                          "Accuracy":list()},
@@ -159,22 +152,6 @@ def kfoldTraining(net_class=network, loaders =None, profile =None,
             # traing finishedfor that fold and start validating
             profile[e][testfold]["Validate"] = validate_(
                 net,loaders[testfold], criterion, device)
-
-
-
-        net.train()
-        tr_profile[e] += train_(net, trldr, criterion,
-                                opt_fn, augm, ustep,
-                                device)
-
-        save_model(net, e)
-
-        net.eval()
-        tr_profile[e] += validate_(net, valdr, criterion,
-                                   augm, device)
-        save_train_hist(tr_profile, e)
-        save_train_hist(aug.transforms[si].ScaleHist.tolist(),
-                        e, name='augfr')
-
-    return tr_profile
-
+        save_model(net, testfold,e)
+        save_train_hist(profile, testfold,e)
+        return profile
