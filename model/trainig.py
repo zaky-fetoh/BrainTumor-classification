@@ -88,8 +88,14 @@ def train_(net, train_loader, criterion, opt_fn, ustep,
 def validate_(net, val_loader, criterion,
               device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
               ):
-    acc = clfmet.Accuracy(top_k=1)
-    llis, alis = list(), list()
+    acc = clfmet.MulticlassAccuracy(num_classes=3)
+    rec = clfmet.MulticlassRecall(num_classes=3)
+    f1s = clfmet.MulticlassF1Score(num_classes=3)
+    pre = clfmet.MulticlassPrecision(num_classes=3)
+    spe = clfmet.MulticlassSpecificity(num_classes=3)
+    llis, alis = list(), list() #loss and accuracy
+    plis, slis = list(), list() # precision and specificity
+    rlis, f1lis = list(), list() # recall and f1Score
     for imgs, target in val_loader:
 
         imgs = imgs.to(device=device)
@@ -100,11 +106,16 @@ def validate_(net, val_loader, criterion,
 
         llis.append(loss.item())
         alis.append(acc(pred, target).item())
-
-        print(llis[-1], alis[-1])
-
-    return [llis, alis]
-
-
-
-
+        rlis.append(rec(pred, target).item())
+        plis.append(pre(pred, target).item())
+        slis.append(spe(pred, target).item())
+        f1lis.append(f1s(pred, target).item())
+        print("loss: ", llis[-1])
+        print("Accuracy: ",alis[-1])
+        print("recall: ", rlis[-1])
+        print("Precision: ",plis[-1])
+        print("specificity: ", slis[-1])
+        print("F1Score: ",f1lis[-1] )
+    return {"Loss": llis ,"Accuracy": alis,
+            "recall":rlis, "Precision":plis,
+            "specificity":slis, "F1Score":f1lis}
