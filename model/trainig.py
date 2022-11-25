@@ -54,18 +54,17 @@ def accuracy(output, target):
 
 
 
-def train_(net, train_loader, criterion, opt_fn, augm, ustep,
+def train_(net, train_loader, criterion, opt_fn, ustep,
            device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
            ):
-    aug, si = augm
+    acc = clfmet.Accuracy(top_k=1)
     llis, alis, samples = list(), list(), 0
-    aug.transforms[si].unfrez_count()
     for imgs, target in train_loader:
-        aug.transforms[si].new_scale()
+        #Move to Device
         imgs = imgs.to(device=device)
         target = target.to(device=device)
-        samples += imgs.shape[0]
 
+        samples += imgs.shape[0]
         pred = net(imgs)
 
         loss = criterion(pred, target)
@@ -78,10 +77,34 @@ def train_(net, train_loader, criterion, opt_fn, augm, ustep,
             samples = 0
 
         llis.append(loss.item())
-        alis.append(accuracy(pred, target).item())
+        alis.append(acc(pred, target).item())
 
         print(llis[-1], alis[-1])
 
     return [llis, alis]
+
+
+@t.no_grad()
+def validate_(net, val_loader, criterion,
+              device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
+              ):
+    acc = clfmet.Accuracy(top_k=1)
+    llis, alis = list(), list()
+    for imgs, target in val_loader:
+
+        imgs = imgs.to(device=device)
+        target = target.to(device=device)
+
+        pred = net(imgs)
+        loss = criterion(pred, target)
+
+        llis.append(loss.item())
+        alis.append(acc(pred, target).item())
+
+        print(llis[-1], alis[-1])
+
+    return [llis, alis]
+
+
 
 
