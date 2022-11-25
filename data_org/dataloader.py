@@ -48,7 +48,7 @@ class DataFold(data.Dataset):
         obj = self.data.__getitem__(item)
         im = normalize(np.asarray(obj["image"],np.float))*255
         im = np.asarray(im, np.uint8)
-        return self.aug(im), int(obj["label"][0,0])
+        return self.aug(im), int(obj["label"][0,0])-1
 
 def getfoldsArray(foldIndMat="cvind.mat"):
     foldinds = h5py.File(foldIndMat)["cvind"]

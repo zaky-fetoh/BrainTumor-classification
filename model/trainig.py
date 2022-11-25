@@ -6,6 +6,8 @@ from model import *
 import torch as t
 import pickle
 
+import torchmetrics.classification as clfmet
+
 
 def save_train_hist(hist, ep_num,
                     name='hist',
@@ -40,3 +42,46 @@ def load_model(file_path=None, model=Network(),
     state_dict = t.load(file_path)
     model.load_state_dict(state_dict)
     print('Model loaded', file_path)
+
+def accuracy(output, target):
+    """Computes the accuracy over the k top predictions for the specified values of k"""
+    with t.no_grad():
+        output = output.argmax(1)
+        matchs = output == target
+        return matchs.sum().float() / matchs.size(0)
+
+
+
+
+
+def train_(net, train_loader, criterion, opt_fn, augm, ustep,
+           device=t.device('cuda' if t.cuda.is_available() else 'cpu'),
+           ):
+    aug, si = augm
+    llis, alis, samples = list(), list(), 0
+    aug.transforms[si].unfrez_count()
+    for imgs, target in train_loader:
+        aug.transforms[si].new_scale()
+        imgs = imgs.to(device=device)
+        target = target.to(device=device)
+        samples += imgs.shape[0]
+
+        pred = net(imgs)
+
+        loss = criterion(pred, target)
+        loss.backward()
+        if samples >= ustep:
+            print('netupdated:', samples)
+            nn.utils.clip_grad_value_(net.parameters(), 0.1)
+            opt_fn.step()
+            opt_fn.zero_grad()
+            samples = 0
+
+        llis.append(loss.item())
+        alis.append(accuracy(pred, target).item())
+
+        print(llis[-1], alis[-1])
+
+    return [llis, alis]
+
+
