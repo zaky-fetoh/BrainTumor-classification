@@ -1,3 +1,98 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{10}
+
+\bibitem{abiwinanda2019brain}
+Nyoman Abiwinanda, Muhammad Hanif, S~Tafwida Hesaputra, Astri Handayani, and
+  Tati~Rajab Mengko.
+\newblock Brain tumor classification using convolutional neural network.
+\newblock In {\em World congress on medical physics and biomedical engineering
+  2018}, pages 183--189. Springer, 2019.
+
+\bibitem{badvza2020classification}
+Milica~M Bad{\v{z}}a and Marko~{\v{C}} Barjaktarovi{\'c}.
+\newblock Classification of brain tumors from mri images using a convolutional
+  neural network.
+\newblock {\em Applied Sciences}, 10(6):1999, 2020.
+
+\bibitem{cheng2017brain}
+Jun Cheng.
+\newblock Brain tumor dataset. figshare. dataset, 2017.
+
+\bibitem{deangelis2001brain}
+Lisa~M DeAngelis.
+\newblock Brain tumors.
+\newblock {\em New England journal of medicine}, 344(2):114--123, 2001.
+
+\bibitem{erhan2014scalable}
+Dumitru Erhan, Christian Szegedy, Alexander Toshev, and Dragomir Anguelov.
+\newblock Scalable object detection using deep neural networks.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 2147--2154, 2014.
+
+\bibitem{girshick2014rich}
+Ross Girshick, Jeff Donahue, Trevor Darrell, and Jitendra Malik.
+\newblock Rich feature hierarchies for accurate object detection and semantic
+  segmentation.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 580--587, 2014.
+
+\bibitem{he2016deep}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 770--778, 2016.
+
+\bibitem{lecun2015deep}
+Yann LeCun, Yoshua Bengio, and Geoffrey Hinton.
+\newblock Deep learning.
+\newblock {\em nature}, 521(7553):436--444, 2015.
+
+\bibitem{lecun1989handwritten}
+Yann LeCun, Bernhard Boser, John Denker, Donnie Henderson, Richard Howard,
+  Wayne Hubbard, and Lawrence Jackel.
+\newblock Handwritten digit recognition with a back-propagation network.
+\newblock {\em Advances in neural information processing systems}, 2, 1989.
+
+\bibitem{raza2022hybrid}
+Asaf Raza, Huma Ayub, Javed~Ali Khan, Ijaz Ahmad, Ahmed S.~Salama,
+  Yousef~Ibrahim Daradkeh, Danish Javeed, Ateeq Ur~Rehman, and Habib Hamam.
+\newblock A hybrid deep learning-based approach for brain tumor classification.
+\newblock {\em Electronics}, 11(7):1146, 2022.
+
+\bibitem{redmon2016you}
+Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi.
+\newblock You only look once: Unified, real-time object detection.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 779--788, 2016.
+
+\bibitem{sermanet2013overfeat}
+Pierre Sermanet, David Eigen, Xiang Zhang, Micha{\"e}l Mathieu, Rob Fergus, and
+  Yann LeCun.
+\newblock Overfeat: Integrated recognition, localization and detection using
+  convolutional networks.
+\newblock {\em arXiv preprint arXiv:1312.6229}, 2013.
+
+\bibitem{simonyan2014very}
+Karen Simonyan and Andrew Zisserman.
+\newblock Very deep convolutional networks for large-scale image recognition.
+\newblock {\em arXiv preprint arXiv:1409.1556}, 2014.
+
+\bibitem{szegedy2015going}
+Christian Szegedy, Wei Liu, Yangqing Jia, Pierre Sermanet, Scott Reed, Dragomir
+  Anguelov, Dumitru Erhan, Vincent Vanhoucke, and Andrew Rabinovich.
+\newblock Going deeper with convolutions.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 1--9, 2015.
+
+\bibitem{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock {\em Advances in neural information processing systems}, 30, 2017.
+
+\bibitem{xie2017aggregated}
+Saining Xie, Ross Girshick, Piotr Doll{\'a}r, Zhuowen Tu, and Kaiming He.
+\newblock Aggregated residual transformations for deep neural networks.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 1492--1500, 2017.
 
 \end{thebibliography}

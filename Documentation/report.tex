@@ -12,11 +12,22 @@
 
 \section{Executive Summary}
 
-Brain Tumor is an abnormal growth of the brain cells. Brain tumor leads to brain cancer and death. Computer aided diagnosis (CAD) tools assists clinician to make a brain Tumor diagnosis.
-This study proposes a Deep learning Network that exploit self-attention mechanism to capture context relationship between extracted feature. Features are extracted using a stack of convolutional layers that exploit a high transformation cardinality on top of learned residual mapping.
+Brain Tumor is an abnormal growth of the brain cells\cite{deangelis2001brain}. Brain tumor leads to brain cancer and death\cite{deangelis2001brain}. Computer aided diagnosis (CAD) tools assists clinician to make a brain Tumor diagnosis.
+~Deep learning \cite{lecun2015deep} models, namely Convolutional Neural Network (CNN) \cite{lecun1989handwritten}, have shown a great performance in computer vision problems including object detection\cite{erhan2014scalable}\cite{girshick2014rich}\cite{sermanet2013overfeat}\cite{redmon2016you}, object recognition\cite{simonyan2014very}\cite{he2016deep} and many others.
+This study proposes a Deep learning Network that exploit self-attention mechanism \cite{vaswani2017attention} to capture context relationship between extracted feature. Features are extracted using a stack of convolutional layers that exploit a high transformation cardinality\cite{xie2017aggregated} on top of learned residual mapping\cite{he2016deep}.
 
 
 \section{Survey of Background Literature}
+
+\cite{abiwinanda2019brain} proposes an architecture that is simpler than current a state-of-the-art classification networks. Authors have used 3064 T-1 weighted
+CE-MRI of brain tumor images dataset\cite{cheng2017brain}. They achieve a training
+and validation accuracies of architecture 2 at best is 98.51\% and 84.19\%, respectively. Their architecture suffer from severe overfitting.\\
+\cite{badvza2020classification} developed network is simpler than already-existing pre-trained networks, and it was tested on T1-weighted contrast-enhanced magnetic resonance images\cite{cheng2017brain}.  10-fold cross-validation method was obtained for the record-wise cross-validation for the augmented data set, and, in that case, the accuracy was 96.56\%. Resdual learning\cite{he2016deep} can enhance the performance and reduce the train time However, it is not applied.\\
+\cite{raza2022hybrid} fine-tuned googLeNet\cite{szegedy2015going} network by replacing the last 5 layer with a new 15 convolutional layer. Thair method ware tested on T1-weighted contrast-enhanced magnetic resonance images\cite{cheng2017brain}. Thair method achieved  99.67\% accuracy, 99.6\% precision, 100\% recall, and a 99.66\% F1-score. 
+
+
+
+
 
 \subsection{Overview}
 
