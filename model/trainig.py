@@ -149,10 +149,10 @@ def kfoldTraining(net_class=Network, loaders =None, profile =None,
                     continue
                 l, a = train_(net, loader,criterion,
                               opt_fn, ustep, device)
-                profile[e][testfold]["Train"]["Loss"] += l
-                profile[e][testfold]["Train"]["Accuracy"] += a
+                profile[testfold][e]["Train"]["Loss"] += l
+                profile[testfold][e]["Train"]["Accuracy"] += a
             # traing finishedfor that fold and start validating
-            profile[e][testfold]["Validate"] = validate_(
+            profile[testfold][e]["Validate"] = validate_(
                 net,loaders[testfold], criterion, device)
         save_model(net, testfold,e)
         save_train_hist(profile, testfold,e)
