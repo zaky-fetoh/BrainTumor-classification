@@ -1,6 +1,26 @@
 import torch.nn as nn
 import torch as t
+import torch.nn.functional as F
 import math
+
+
+class SpatialAttn(nn.Module):
+    def __init__(self, in_features, normalize_attn=True):
+        super(SpatialAttn, self).__init__()
+        self.normalize_attn = normalize_attn
+        self.op = nn.Conv2d(in_channels=in_features, out_channels=1,
+            kernel_size=1, padding=0, bias=False)
+
+    def forward(self, l):
+        N, C, H, W = l.size()
+        c = self.op(l) # (batch_size,1,H,W)
+        if self.normalize_attn:
+            a = F.softmax(c.view(N,1,-1), dim=2).view(N,1,H,W)
+        else:
+            a = t.sigmoid(c)
+        return c.view(N,1,H,W)
+
+
 
 class ResNextBlock(nn.Module):
     #Resnextblock
@@ -17,6 +37,7 @@ class ResNextBlock(nn.Module):
 
         D = int(math.floor(planes * (baseWidth / 64)))
         C = cardinality
+        self.atten = SpatialAttn(inplanes, planes)
 
         self.conv1 = nn.Conv2d(inplanes, D*C, kernel_size=1, stride=1, padding=0, bias=False)
         self.bn1 = nn.BatchNorm2d(D*C)
@@ -29,6 +50,7 @@ class ResNextBlock(nn.Module):
         self.downsample = downsample
 
     def forward(self, x):
+        att= self.atten(x)
         out = self.relu(self.bn1(self.conv1(x)))
         out = self.relu(self.bn2(self.conv2(out)))
         out = self.bn3(self.conv3(out))
@@ -37,11 +59,14 @@ class ResNextBlock(nn.Module):
         if(list(out.shape) == list(x.shape)):
             out += x
         out = self.relu(out)
-        return out
+        return out * att
 
 class ResBlock(nn.Module):
     def __init__(self, inplanes, outplanes):
         super(ResBlock, self).__init__()
+
+        self.atten = SpatialAttn(inplanes, outplanes)
+
         self.conv1 = nn.Conv2d(inplanes,outplanes,
                               kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(outplanes)
@@ -50,17 +75,19 @@ class ResBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(outplanes)
         self.relu = nn.LeakyReLU()
     def forward(self, x):
+        att= self.atten(x)
         out = self.relu(self.bn1(self.conv1(x)))
         out = self.relu(self.bn2(self.conv2(out)))
         if(list(out.shape) == list(x.shape)):
             out += x
-        return out
+        return out * att
 
 
 class Network(nn.Module):
     def __init__(self, labelNum= 3):
         super(Network, self).__init__()
         self.convbase  = nn.Sequential(
+            nn.BatchNorm2d(1),
             ResBlock(1,32),
             ResBlock(32,32),
             ResBlock(32,32),

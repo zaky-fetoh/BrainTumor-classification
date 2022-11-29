@@ -130,8 +130,10 @@ def kfoldTraining(net_class=Network, loaders =None, profile =None,
         t.cuda.empty_cache()
         net = net_class()
         if initload :
-            load_model(model=net,fold_num=startFoldWith,
-                       ep_num=startEpochWith)
+            load_model(model=net,fold_num=startFoldWith-1,
+                       ep_num=startEpochWith-1)
+            profile = load_train_hist(startFoldWith-1,
+                                      startEpochWith-1)
             initload = False
 
         opt_fn = optClass(net.parameters())
@@ -154,6 +156,6 @@ def kfoldTraining(net_class=Network, loaders =None, profile =None,
             # traing finishedfor that fold and start validating
             profile[testfold][e]["Validate"] = validate_(
                 net,loaders[testfold], criterion, device)
-        save_model(net, testfold,e)
-        save_train_hist(profile, testfold,e)
-        return profile
+            save_model(net, testfold,e)
+            save_train_hist(profile, testfold,e)
+    return profile
